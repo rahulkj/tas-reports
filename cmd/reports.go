@@ -33,8 +33,7 @@ type Buildpack struct {
 
 type App struct {
 	AppName   string `json:"name"`
-	AppGUID   string
-	Instances int `json:"value"`
+	Instances int    `json:"value"`
 }
 
 func ParseManifests(reportsDirectory string, env string) {
@@ -104,7 +103,7 @@ func ParseManifests(reportsDirectory string, env string) {
 	fmt.Println(currentDir)
 
 	reportsDir := currentDir + "/reports-for-analysis"
-	
+
 	WriteReport(reportsDir, fileName, tasReportData)
 }
 
@@ -114,7 +113,7 @@ func locateBuildpackAndAddApplication(space Space, appSearchResource cmd.AppSear
 	var buildpack Buildpack
 	buildpackName := appSearchResource.Entity.Buildpack
 
-	app := App{AppName: appSearchResource.Entity.Name, AppGUID: appSearchResource.Metadata.AppGUID, Instances: appSearchResource.Entity.Instances}
+	app := App{AppName: appSearchResource.Entity.Name, Instances: appSearchResource.Entity.Instances}
 
 	var foundAndUpdatedBuildpack bool
 	var buildpackIndex int = -1
