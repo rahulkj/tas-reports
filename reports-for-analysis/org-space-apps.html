@@ -3,78 +3,106 @@
 -->
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
-<head>
-  <meta charset="utf-8">
-</head>
-<body style="height: 100%; margin: 0">
-  <div id="container" style="height: 100%"></div>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%"></div>
 
-  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-  <script src="org-space-app.js"></script>
-  <script src="logic.js"></script>
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
+    ></script>
+    <script src="org-space-app.js"></script>
+    <script src="logic.js"></script>
 
-  <!-- Uncomment this line if you want to dataTool extension
+    <!-- Uncomment this line if you want to dataTool extension
   <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/extension/dataTool.min.js"></script>
   -->
-  <!-- Uncomment this line if you want to use gl extension
+    <!-- Uncomment this line if you want to use gl extension
   <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
   -->
-  <!-- Uncomment this line if you want to echarts-stat extension
+    <!-- Uncomment this line if you want to echarts-stat extension
   <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
   -->
-  <!-- Uncomment this line if you want to use map
+    <!-- Uncomment this line if you want to use map
   <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
   <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
   -->
-  <!-- Uncomment these two lines if you want to use bmap extension
+    <!-- Uncomment these two lines if you want to use bmap extension
   <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
   <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/extension/bmap.min.js"></script>
   -->
 
-  <script type="text/javascript">
-    var dom = document.getElementById('container');
-    var myChart = echarts.init(dom, null, {
-      renderer: 'canvas',
-      useDirtyRect: false
-    });
-    var app = {};
-    var ROOT_PATH = 'https://echarts.apache.org/examples';
-    var option;
+    <script type="text/javascript">
+      var dom = document.getElementById("container");
+      var myChart = echarts.init(dom, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      var app = {};
+      var ROOT_PATH = "https://echarts.apache.org/examples";
+      var option;
 
-    myChart.showLoading();
+      myChart.showLoading();
 
-    myChart.hideLoading();
-    myChart.setOption(
-            (option = {
-              tooltip: {
-                trigger: 'item',
-                triggerOn: 'mousemove'
+      myChart.hideLoading();
+      myChart.setOption(
+        (option = {
+          tooltip: {
+            trigger: "item",
+            triggerOn: "mousemove",
+          },
+          series: [
+            {
+              type: "tree",
+              data: [getOrgSpaceAppsChartData()],
+              top: "18%",
+              bottom: "14%",
+              layout: "radial",
+              symbol: "emptyCircle",
+              symbolSize: 7,
+              initialTreeDepth: 3,
+              lineStyle: {
+                color: "rgba(27, 1, 154, 1)",
               },
-              series: [
-                {
-                  type: 'tree',
-                  data: [getOrgSpaceAppsChartData()],
-                  top: '18%',
-                  bottom: '14%',
-                  layout: 'radial',
-                  symbol: 'emptyCircle',
-                  symbolSize: 7,
-                  initialTreeDepth: 3,
-                  animationDurationUpdate: 750,
-                  emphasis: {
-                    focus: 'descendant'
-                  }
-                }
-              ]
-            })
-    );
+              itemStyle: {
+                color: "rgba(27, 1, 154, 1)",
+              },
+              animationDurationUpdate: 750,
+              emphasis: {
+                focus: "descendant",
+              },
+              leaves: {
+                itemStyle: {
+                  color: "rgba(208, 8, 8, 1)",
+                },
+                lineStyle: {
+                  color: "rgba(234, 8, 8, 1)",
+                },
+                select: {
+                  itemStyle: {
+                    color: "rgba(16, 181, 193, 1)",
+                  },
+                  lineStyle: {
+                    color: "rgba(16, 181, 193, 1)",
+                  },
+                },
+              },
+            },
+          ],
+        })
+      );
 
-    if (option && typeof option === 'object') {
-      myChart.setOption(option);
-    }
+      if (option && typeof option === "object") {
+        myChart.setOption(option);
+      }
 
-    window.addEventListener('resize', myChart.resize);
-  </script>
-</body>
+      window.addEventListener("resize", myChart.resize);
+    </script>
+  </body>
 </html>
