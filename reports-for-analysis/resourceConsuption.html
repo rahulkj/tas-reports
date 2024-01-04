@@ -1,0 +1,136 @@
+<!--
+	THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/en/editor.html?c=bar-brush
+-->
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+<div id="container" style="height: 100%"></div>
+
+<script src="org-space-app.js"></script>
+<script src="logic.js"></script>
+
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<!-- Uncomment this line if you want to dataTool extension
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/extension/dataTool.min.js"></script>
+-->
+<!-- Uncomment this line if you want to use gl extension
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+-->
+<!-- Uncomment this line if you want to echarts-stat extension
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+-->
+<!-- Uncomment this line if you want to use map
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+-->
+<!-- Uncomment these two lines if you want to use bmap extension
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/extension/bmap.min.js"></script>
+-->
+
+<script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    var redenderData = getAppResourceData()
+
+    var emphasisStyle = {
+        itemStyle: {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0,0,0,0.3)'
+        }
+    };
+    option = {
+        legend: {
+            data: ['INSTANCES', 'MEMORY (in GB)', 'DISK QUOTA (in GB)'],
+            left: '10%'
+        },
+        brush: {
+            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            xAxisIndex: 0
+        },
+        toolbox: {
+            feature: {
+                magicType: {
+                    type: ['stack']
+                },
+                dataView: {}
+            }
+        },
+        tooltip: {},
+        xAxis: {
+            data: redenderData.apps,
+            name: 'Application',
+            axisLine: { onZero: true },
+            splitLine: { show: false },
+            splitArea: { show: false }
+        },
+        yAxis: {
+            name: 'Resource Consumption'
+        },
+        grid: {
+            bottom: 100
+        },
+        series: [
+            {
+                name: 'INSTANCES',
+                type: 'bar',
+                stack: 'one',
+                emphasis: emphasisStyle,
+                data: redenderData.instances
+            },
+            {
+                name: 'MEMORY (in GB)',
+                type: 'bar',
+                stack: 'two',
+                emphasis: emphasisStyle,
+                data: redenderData.memoryUsage
+            },
+            {
+                name: 'DISK QUOTA (in GB)',
+                type: 'bar',
+                stack: 'two',
+                emphasis: emphasisStyle,
+                data: redenderData.diskQuota
+            }
+        ]
+    };
+    myChart.on('brushSelected', function (params) {
+        var brushed = [];
+        var brushComponent = params.batch[0];
+        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+            var rawIndices = brushComponent.selected[sIdx].dataIndex;
+            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+        }
+        myChart.setOption({
+            title: {
+                backgroundColor: '#333',
+                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+                bottom: 0,
+                right: '10%',
+                width: 100,
+                textStyle: {
+                    fontSize: 12,
+                    color: '#fff'
+                }
+            }
+        });
+    });
+
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+</script>
+</body>
+</html>
