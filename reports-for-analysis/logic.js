@@ -111,3 +111,29 @@ function getStackAppData() {
 
   return stackAppData;
 }
+
+function getAppsPowerStateData() {
+  let appsData = [];
+
+  const powerStateMap = new Map();
+
+  for (const org of data.orgs) {
+    for (const space of org.spaces) {
+      for (const spaceApp of space.apps) {
+        if (powerStateMap.has(spaceApp.entity.state)) {
+          let count = powerStateMap.get(spaceApp.entity.state) + 1;
+          powerStateMap.set(spaceApp.entity.state, count);
+        } else {
+          powerStateMap.set(spaceApp.entity.state, 1);
+        }
+      }
+    }
+  }
+
+  powerStateMap.forEach(function (value, key) {
+    let appPowerStatus = {name: key, value: value}
+    appsData.push(appPowerStatus)
+  });
+
+  return appsData;
+}
