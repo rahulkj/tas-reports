@@ -137,3 +137,28 @@ function getAppsPowerStateData() {
 
   return appsData;
 }
+
+function getOrgSpaceAppTableData() {
+  let buildpackRelationData = [];
+
+  for (const org of data.orgs) {
+    for (const space of org.spaces) {
+      for (const spaceApp of space.apps) {
+        let data = []
+
+        data.push(org.orgName);
+        data.push(space.spaceName);
+        data.push(spaceApp.entity.name);
+        data.push(spaceApp.entity.instances);
+        data.push(spaceApp.entity.state);
+        data.push(spaceApp.entity.memory);
+        data.push(spaceApp.entity.disk_quota);
+        data.push(spaceApp.entity.detected_buildpack_filename);
+        buildpackRelationData.push(data);
+      }
+
+    }
+  }
+
+  return buildpackRelationData;
+}

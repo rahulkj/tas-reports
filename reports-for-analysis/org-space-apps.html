@@ -7,7 +7,8 @@
     <div style="background-color: #79cbf2">
       <h2>Org, Space, application breakdown</h2>
       <p>
-        The chart represents a breakdown of the TAS environment, that shows the relationships between the orgs, spaces and the applications.
+        The chart represents a breakdown of the TAS environment, that shows the
+        relationships between the orgs, spaces and the applications.
       </p>
     </div>
     <div id="container" style="height: 100%"></div>
@@ -20,6 +21,17 @@
       type="text/javascript"
       src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
     ></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"
+    />
+
     <script src="org-space-app.js"></script>
     <script src="logic.js"></script>
 
@@ -91,3 +103,23 @@
     </script>
   </body>
 </html>
+
+<table id="complete" class="display" width="100%"></table>
+
+<script>
+  const dataSet = getOrgSpaceAppTableData();
+
+  new DataTable("#complete", {
+    columns: [
+      { title: "Org" },
+      { title: "Space" },
+      { title: "Application" },
+      { title: "Application Instances" },
+      { title: "State" },
+      { title: "Memory" },
+      { title: "Disk Quota" },
+      { title: "Buildpack" },
+    ],
+    data: dataSet
+  });
+</script>
