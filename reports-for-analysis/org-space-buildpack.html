@@ -7,10 +7,13 @@
     <div style="background-color: #79cbf2">
       <h2>Org, Space, buildpack, application breakdown</h2>
       <p>
-        The chart represents a breakdown of the number of applications using a specific buildpack, and running in their respective spaces under the various org
+        The chart represents a breakdown of the number of applications using a
+        specific buildpack, and running in their respective spaces under the
+        various org
       </p>
       <p>
-        This is a representation of the various types of application technology stack that are hosted in the TAS environment
+        This is a representation of the various types of application technology
+        stack that are hosted in the TAS environment
       </p>
     </div>
 
@@ -24,8 +27,21 @@
       type="text/javascript"
       src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
     ></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
     <script src="org-space-app.js"></script>
     <script src="logic.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"
+    />
+
     <script type="text/javascript">
       var dom = document.getElementById("container");
       var myChart = echarts.init(dom, null, {
@@ -48,7 +64,7 @@
           series: [
             {
               type: "tree",
-              data: [getBuildpackChartData()],
+              data: [getOrgSpaceBuildpackAppsChartData()],
               top: "18%",
               bottom: "14%",
               layout: "radial",
@@ -91,6 +107,26 @@
       }
 
       window.addEventListener("resize", myChart.resize);
+    </script>
+
+    <table id="orgSpaceBuildpackAppTable" class="display" width="100%"></table>
+
+    <script>
+      const dataSet = getOrgSpaceBuildpackAppTableData();
+
+      new DataTable("#orgSpaceBuildpackAppTable", {
+        columns: [
+          { title: "Org" },
+          { title: "Space" },
+          { title: "Application" },
+          { title: "Application Instances" },
+          { title: "State" },
+          { title: "Memory" },
+          { title: "Disk Quota" },
+          { title: "Buildpack" },
+        ],
+        data: dataSet,
+      });
     </script>
   </body>
 </html>

@@ -7,16 +7,38 @@
     <div style="background-color: #79cbf2">
       <h2>Application power state breakdown</h2>
       <p>
-        The chart represents a breakdown of the number of applications based on their power status, STARTED, STOPPED, etc
+        The chart represents a breakdown of the number of applications based on
+        their power status, STARTED, STOPPED, etc
       </p>
       <p>
-        Use this information to identify potential opportunities to delete the apps instances that are not in the running state
+        Use this information to identify potential opportunities to delete the
+        apps instances that are not in the running state
       </p>
     </div>
     <div id="container" style="height: 100%"></div>
 
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
     <script src="org-space-app.js"></script>
     <script src="logic.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"
+    />
 
     <script
       type="text/javascript"
@@ -75,6 +97,26 @@
       }
 
       window.addEventListener("resize", myChart.resize);
+    </script>
+
+    <table id="appPowerStatusTable" class="display" width="100%"></table>
+
+    <script>
+      const dataSet = getOrgSpaceAppTableData();
+
+      new DataTable("#appPowerStatusTable", {
+        columns: [
+          { title: "Org" },
+          { title: "Space" },
+          { title: "Application" },
+          { title: "Application Instances" },
+          { title: "State" },
+          { title: "Memory" },
+          { title: "Disk Quota" },
+          { title: "Buildpack" },
+        ],
+        data: dataSet,
+      });
     </script>
   </body>
 </html>
