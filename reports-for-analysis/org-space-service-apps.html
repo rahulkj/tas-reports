@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body style="height: 100%; margin: 0">
+    <div style="background-color: #79cbf2">
+      <h2>Org, Space, Service, application breakdown</h2>
+      <p>
+        The chart represents a breakdown of the number of applications using a
+        specific service(s), and running in their respective spaces under the
+        various org
+      </p>
+      <p>
+        This is a representation of the various types of application technology
+        stack that are hosted in the TAS environment
+      </p>
+    </div>
+
+    <div id="container" style="height: 100%"></div>
+
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+    <script src="org-space-app.js"></script>
+    <script src="logic.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"
+    />
+
+    <script type="text/javascript">
+      var dom = document.getElementById("container");
+      var myChart = echarts.init(dom, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      var app = {};
+      var ROOT_PATH = "https://echarts.apache.org/examples";
+      var option;
+
+      myChart.showLoading();
+
+      myChart.hideLoading();
+      myChart.setOption(
+              (option = {
+                tooltip: {
+                  trigger: 'item',
+                  triggerOn: 'mousemove'
+                },
+                series: [
+                  {
+                    type: 'tree',
+                    data: [getOrgSpaceServicesAppsChartData()],
+                    top: '1%',
+                    left: '7%',
+                    bottom: '1%',
+                    right: '20%',
+                    symbolSize: 7,
+                    initialTreeDepth: 4,
+                    label: {
+                      position: 'left',
+                      verticalAlign: 'middle',
+                      align: 'right',
+                      fontSize: 9
+                    },
+                    leaves: {
+                      label: {
+                        position: 'right',
+                        verticalAlign: 'middle',
+                        align: 'left'
+                      }
+                    },
+                    emphasis: {
+                      focus: 'descendant'
+                    },
+                    expandAndCollapse: true,
+                    animationDuration: 550,
+                    animationDurationUpdate: 750
+                  }
+                ]
+              })
+      );
+
+      if (option && typeof option === "object") {
+        myChart.setOption(option);
+      }
+
+      window.addEventListener("resize", myChart.resize);
+    </script>
+
+    <table id="displayTable" class="display" width="100%"></table>
+
+    <script>
+      const dataSet = getOrgSpaceServiceAppTableData();
+
+      new DataTable("#displayTable", {
+        columns: [
+          { title: "Org" },
+          { title: "Space" },
+          { title: "Application" },
+          { title: "Application Instances" },
+          { title: "State" },
+          { title: "Memory" },
+          { title: "Disk Quota" },
+          { title: "Buildpack" },
+          { title: "Service Name" },
+          { title: "Service Type" },
+          { title: "Service Plan Name" },
+          { title: "Service Plan Description" },
+          { title: "Service Plan Label" },
+          { title: "Service Broker Name" },
+          { title: "Service Version" },
+          { title: "Service Description" },
+        ],
+        data: dataSet,
+      });
+    </script>
+  </body>
+</html>
