@@ -96,12 +96,12 @@
       window.addEventListener("resize", myChart.resize);
     </script>
 
-    <table id="orgSpaceStackAppTable" class="display" width="100%"></table>
+    <table id="displayTable" class="display" width="100%"></table>
 
     <script>
       const dataSet = getOrgSpaceStackAppTableData();
 
-      new DataTable("#orgSpaceStackAppTable", {
+      new DataTable("#displayTable", {
         columns: [
           { title: "Org" },
           { title: "Space" },
