@@ -1,177 +1,181 @@
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  <body style="height: 100%; margin: 0">
-    <div style="background-color:#79cbf2;">
-      <h2>Application instance count with resource usage breakdown</h2>
-      <p>The chart represents a breakdown of the resource usage by the applications running in the TAS environment</p>
-      <p>Use this information to identify potential opportunities:
-        <ul>
-          <li>to resize the applications to a lower memory and disk footprint, so the applications can be scaled horizontally when there is a high user volume</li>
-          <li>to increase the number of instances to 2 to begin with, to avoid any outages if the application instance crashes during runtime</li>
-        </ul>
-      </p>
-    </div>
 
-    <div id="container" style="height: 100%"></div>
+<head>
+  <meta charset="utf-8" />
+</head>
 
-    <script
-      type="text/javascript"
-      src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
-    ></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<body style="height: 100%; margin: 0">
+  <div style="background-color:#79cbf2;">
+    <h2>Application instance count with resource usage breakdown</h2>
+    <p>The chart represents a breakdown of the resource usage by the applications running in the TAS environment</p>
+    <p>Use this information to identify potential opportunities:
+    <ul>
+      <li>to resize the applications to a lower memory and disk footprint, so the applications can be scaled
+        horizontally when there is a high user volume</li>
+      <li>to increase the number of instances to 2 to begin with, to avoid any outages if the application instance
+        crashes during runtime</li>
+    </ul>
+    </p>
+  </div>
 
-    <script src="org-space-app.js"></script>
-    <script src="logic.js"></script>
+  <div id="container" style="height: 100%"></div>
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"
-    />
-    
-    <script type="text/javascript">
-      var dom = document.getElementById("container");
-      var myChart = echarts.init(dom, null, {
-        renderer: "canvas",
-        useDirtyRect: false,
-      });
-      var app = {};
+  <script src="common.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 
-      var option;
+  <script src="org-space-app.js"></script>
+  <script src="logic.js"></script>
 
-      var redenderData = getAppResourceData();
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
 
-      var emphasisStyle = {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowColor: "rgba(0,0,0,0.3)",
-        },
-      };
+  <script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom, null, {
+      renderer: "canvas",
+      useDirtyRect: false,
+    });
+    var app = {};
 
-      const labelOption = {
-        show: true,
-        rotate: 90,
-        formatter: "{c}  {name|{a}}",
-        fontSize: 16,
-        rich: {
-          name: {},
-        },
-      };
+    var option;
 
-      option = {
-        legend: {
-          data: ["INSTANCES", "MEMORY (in GB)", "DISK QUOTA (in GB)"],
-          center: "10%",
-        },
-        brush: {
-          toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-          xAxisIndex: 0,
-        },
-        toolbox: {
-          feature: {
-            magicType: {
-              type: ["stack"],
-            },
-            dataView: {},
+    var redenderData = getAppResourceData();
+
+    var emphasisStyle = {
+      itemStyle: {
+        shadowBlur: 10,
+        shadowColor: "rgba(0,0,0,0.3)",
+      },
+    };
+
+    const labelOption = {
+      show: true,
+      rotate: 90,
+      formatter: "{c}  {name|{a}}",
+      fontSize: 16,
+      rich: {
+        name: {},
+      },
+    };
+
+    option = {
+      legend: {
+        data: ["INSTANCES", "MEMORY (in GB)", "DISK QUOTA (in GB)"],
+        center: "10%",
+      },
+      brush: {
+        toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
+        xAxisIndex: 0,
+      },
+      toolbox: {
+        feature: {
+          magicType: {
+            type: ["stack"],
           },
+          dataView: {},
         },
-        tooltip: {},
-        xAxis: {
-          axisLabel: {
-            rotate: 45,
-          },
-          data: redenderData.apps,
-          name: "Application",
-          axisLine: { onZero: true },
-          splitLine: { show: false },
-          splitArea: { show: false },
+      },
+      tooltip: {},
+      xAxis: {
+        axisLabel: {
+          rotate: 45,
         },
-        yAxis: {
-          name: "Resource Consumption",
+        data: redenderData.apps,
+        name: "Application",
+        axisLine: { onZero: true },
+        splitLine: { show: false },
+        splitArea: { show: false },
+      },
+      yAxis: {
+        name: "Resource Consumption",
+      },
+      grid: {
+        bottom: 100,
+      },
+      series: [
+        {
+          name: "INSTANCES",
+          type: "bar",
+          stack: "one",
+          emphasis: emphasisStyle,
+          data: redenderData.instances,
         },
-        grid: {
-          bottom: 100,
+        {
+          name: "MEMORY (in GB)",
+          type: "bar",
+          stack: "two",
+          emphasis: emphasisStyle,
+          data: redenderData.memoryUsage,
         },
-        series: [
-          {
-            name: "INSTANCES",
-            type: "bar",
-            stack: "one",
-            emphasis: emphasisStyle,
-            data: redenderData.instances,
-          },
-          {
-            name: "MEMORY (in GB)",
-            type: "bar",
-            stack: "two",
-            emphasis: emphasisStyle,
-            data: redenderData.memoryUsage,
-          },
-          {
-            name: "DISK QUOTA (in GB)",
-            type: "bar",
-            stack: "two",
-            emphasis: emphasisStyle,
-            data: redenderData.diskQuota,
-          },
-        ],
-      };
-      myChart.on("brushSelected", function (params) {
-        var brushed = [];
-        var brushComponent = params.batch[0];
-        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
-          var rawIndices = brushComponent.selected[sIdx].dataIndex;
-          brushed.push("[Series " + sIdx + "] " + rawIndices.join(", "));
-        }
-        myChart.setOption({
-          title: {
-            backgroundColor: "#333",
-            text: "SELECTED DATA INDICES: \n" + brushed.join("\n"),
-            bottom: 0,
-            right: "10%",
-            width: 100,
-            textStyle: {
-              fontSize: 12,
-              color: "#fff",
-            },
-          },
-        });
-      });
-
-      if (option && typeof option === "object") {
-        myChart.setOption(option);
+        {
+          name: "DISK QUOTA (in GB)",
+          type: "bar",
+          stack: "two",
+          emphasis: emphasisStyle,
+          data: redenderData.diskQuota,
+        },
+      ],
+    };
+    myChart.on("brushSelected", function (params) {
+      var brushed = [];
+      var brushComponent = params.batch[0];
+      for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+        var rawIndices = brushComponent.selected[sIdx].dataIndex;
+        brushed.push("[Series " + sIdx + "] " + rawIndices.join(", "));
       }
-
-      window.addEventListener("resize", myChart.resize);
-    </script>
-    <table id="displayTable" class="display" width="100%"></table>
-
-    <script>
-      const dataSet = getOrgSpaceAppTableData();
-
-      new DataTable("#displayTable", {
-        columns: [
-          { title: "Org" },
-          { title: "Space" },
-          { title: "Application" },
-          { title: "Application Instances" },
-          { title: "State" },
-          { title: "Memory" },
-          { title: "Disk Quota" },
-        ],
-        data: dataSet,
+      myChart.setOption({
+        title: {
+          backgroundColor: "#333",
+          text: "SELECTED DATA INDICES: \n" + brushed.join("\n"),
+          bottom: 0,
+          right: "10%",
+          width: 100,
+          textStyle: {
+            fontSize: 12,
+            color: "#fff",
+          },
+        },
       });
-    </script>
-  </body>
+    });
+
+    if (option && typeof option === "object") {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener("resize", myChart.resize);
+  </script>
+  <table id="displayTable" class="display" width="100%"></table>
+
+  <script>
+    const dataSet = getOrgSpaceAppTableData();
+
+    new DataTable("#displayTable", {
+      columns: [
+        { title: "Org" },
+        { title: "Space" },
+        { title: "Application" },
+        { title: "Application Instances" },
+        { title: "State" },
+        { title: "Memory" },
+        { title: "Disk Quota" },
+      ],
+      data: dataSet, 
+      dom: 'Blfrtip',
+      buttons: [
+        'colvis',
+        { extend: 'copy', text: 'Copy to clipboard' },
+        'excel',
+        'csv',
+      ],
+      colReorder: true,
+      select: {
+        style: 'multi'
+      },
+      "pageLength": 50,
+      "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]]
+    });
+  </script>
+</body>
+
 </html>

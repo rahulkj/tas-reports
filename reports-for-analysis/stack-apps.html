@@ -1,117 +1,119 @@
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  <body style="height: 100%; margin: 0">
-    <div style="background-color: #79cbf2">
-      <h2>Application stacks breakdown</h2>
-      <p>
-        The chart represents a breakdown of the number of applications using
-        different stacks
-      </p>
-      <p>
-        Use this information to identify potential opportunities to upgrade the
-        applications to the latest supported cf stack
-      </p>
-    </div>
 
-    <div id="container" style="height: 100%"></div>
+<head>
+  <meta charset="utf-8" />
+</head>
 
-    <script
-      type="text/javascript"
-      src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
-    ></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<body style="height: 100%; margin: 0">
+  <div style="background-color: #79cbf2">
+    <h2>Application stacks breakdown</h2>
+    <p>
+      The chart represents a breakdown of the number of applications using
+      different stacks
+    </p>
+    <p>
+      Use this information to identify potential opportunities to upgrade the
+      applications to the latest supported cf stack
+    </p>
+  </div>
 
-    <script src="org-space-app.js"></script>
-    <script src="logic.js"></script>
+  <div id="container" style="height: 100%"></div>
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"
-    />
+  <script src="common.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 
-    <script type="text/javascript">
-      var dom = document.getElementById("container");
-      var myChart = echarts.init(dom, null, {
-        renderer: "canvas",
-        useDirtyRect: false,
-      });
-      var app = {};
+  <script src="org-space-app.js"></script>
+  <script src="logic.js"></script>
 
-      var option;
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
 
-      option = {
-        tooltip: {
-          trigger: "item",
-        },
-        legend: {
-          top: "5%",
-          left: "center",
-        },
-        series: [
-          {
-            name: "",
-            type: "pie",
-            radius: ["40%", "70%"],
-            avoidLabelOverlap: false,
-            itemStyle: {
-              borderRadius: 10,
-              borderColor: "#fff",
-              borderWidth: 2,
-            },
-            label: {
-              show: false,
-              position: "center",
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: 40,
-                fontWeight: "bold",
-              },
-            },
-            labelLine: {
-              show: false,
-            },
-            data: getStackAppData(),
+  <script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom, null, {
+      renderer: "canvas",
+      useDirtyRect: false,
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+      tooltip: {
+        trigger: "item",
+      },
+      legend: {
+        top: "5%",
+        left: "center",
+      },
+      series: [
+        {
+          name: "",
+          type: "pie",
+          radius: ["40%", "70%"],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: "#fff",
+            borderWidth: 2,
           },
-        ],
-      };
+          label: {
+            show: false,
+            position: "center",
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 40,
+              fontWeight: "bold",
+            },
+          },
+          labelLine: {
+            show: false,
+          },
+          data: getStackAppData(),
+        },
+      ],
+    };
 
-      if (option && typeof option === "object") {
-        myChart.setOption(option);
-      }
+    if (option && typeof option === "object") {
+      myChart.setOption(option);
+    }
 
-      window.addEventListener("resize", myChart.resize);
-    </script>
+    window.addEventListener("resize", myChart.resize);
+  </script>
 
-    <table id="displayTable" class="display" width="100%"></table>
+  <table id="displayTable" class="display" width="100%"></table>
 
-    <script>
-      const dataSet = getOrgSpaceStackAppTableData();
+  <script>
+    const dataSet = getOrgSpaceStackAppTableData();
 
-      new DataTable("#displayTable", {
-        columns: [
-          { title: "Org" },
-          { title: "Space" },
-          { title: "Application" },
-          { title: "Application Instances" },
-          { title: "State" },
-          { title: "Stack" },
-        ],
-        data: dataSet,
-      });
-    </script>
-  </body>
+    new DataTable("#displayTable", {
+      columns: [
+        { title: "Org" },
+        { title: "Space" },
+        { title: "Application" },
+        { title: "Application Instances" },
+        { title: "State" },
+        { title: "Stack" },
+      ],
+      data: dataSet,
+      dom: 'Blfrtip',
+      buttons: [
+        'colvis',
+        { extend: 'copy', text: 'Copy to clipboard' },
+        'excel',
+        'csv',
+      ],
+      colReorder: true,
+      select: {
+        style: 'multi'
+      },
+      "pageLength": 50,
+      "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]]
+    });
+  </script>
+</body>
+
 </html>

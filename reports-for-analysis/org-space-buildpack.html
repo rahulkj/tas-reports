@@ -1,132 +1,134 @@
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  <body style="height: 100%; margin: 0">
-    <div style="background-color: #79cbf2">
-      <h2>Org, Space, buildpack, application breakdown</h2>
-      <p>
-        The chart represents a breakdown of the number of applications using a
-        specific buildpack, and running in their respective spaces under the
-        various org
-      </p>
-      <p>
-        This is a representation of the various types of application technology
-        stack that are hosted in the TAS environment
-      </p>
-    </div>
 
-    <div id="container" style="height: 100%"></div>
+<head>
+  <meta charset="utf-8" />
+</head>
 
-    <script
-      type="text/javascript"
-      src="https://fastly.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"
-    ></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<body style="height: 100%; margin: 0">
+  <div style="background-color: #79cbf2">
+    <h2>Org, Space, buildpack, application breakdown</h2>
+    <p>
+      The chart represents a breakdown of the number of applications using a
+      specific buildpack, and running in their respective spaces under the
+      various org
+    </p>
+    <p>
+      This is a representation of the various types of application technology
+      stack that are hosted in the TAS environment
+    </p>
+  </div>
 
-    <script src="org-space-app.js"></script>
-    <script src="logic.js"></script>
+  <div id="container" style="height: 100%"></div>
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"
-    />
+  <script src="common.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 
-    <script type="text/javascript">
-      var dom = document.getElementById("container");
-      var myChart = echarts.init(dom, null, {
-        renderer: "canvas",
-        useDirtyRect: false,
-      });
-      var app = {};
-      var ROOT_PATH = "https://echarts.apache.org/examples";
-      var option;
+  <script src="org-space-app.js"></script>
+  <script src="logic.js"></script>
 
-      myChart.showLoading();
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
 
-      myChart.hideLoading();
-      myChart.setOption(
-        (option = {
-          tooltip: {
-            trigger: "item",
-            triggerOn: "mousemove",
-          },
-          series: [
-            {
-              type: "tree",
-              data: [getOrgSpaceBuildpackAppsChartData()],
-              top: "18%",
-              bottom: "14%",
-              layout: "radial",
-              symbol: "emptyCircle",
-              symbolSize: 7,
-              initialTreeDepth: 4,
-              lineStyle: {
-                color: "rgba(241, 157, 0, 1)",
-              },
+  <script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom, null, {
+      renderer: "canvas",
+      useDirtyRect: false,
+    });
+    var app = {};
+    var ROOT_PATH = "https://echarts.apache.org/examples";
+    var option;
+
+    myChart.showLoading();
+
+    myChart.hideLoading();
+    myChart.setOption(
+      (option = {
+        tooltip: {
+          trigger: "item",
+          triggerOn: "mousemove",
+        },
+        series: [
+          {
+            type: "tree",
+            data: [getOrgSpaceBuildpackAppsChartData()],
+            top: "18%",
+            bottom: "14%",
+            layout: "radial",
+            symbol: "emptyCircle",
+            symbolSize: 7,
+            initialTreeDepth: 4,
+            lineStyle: {
+              color: "rgba(241, 157, 0, 1)",
+            },
+            itemStyle: {
+              color: "rgba(241, 157, 0, 1)",
+            },
+            animationDurationUpdate: 750,
+            emphasis: {
+              focus: "descendant",
+            },
+            leaves: {
               itemStyle: {
-                color: "rgba(241, 157, 0, 1)",
+                color: "rgba(0, 125, 241, 1)",
               },
-              animationDurationUpdate: 750,
-              emphasis: {
-                focus: "descendant",
+              lineStyle: {
+                color: "rgba(0, 125, 241, 1)",
               },
-              leaves: {
+              select: {
                 itemStyle: {
-                  color: "rgba(0, 125, 241, 1)",
+                  color: "rgba(16, 181, 193, 1)",
                 },
                 lineStyle: {
-                  color: "rgba(0, 125, 241, 1)",
-                },
-                select: {
-                  itemStyle: {
-                    color: "rgba(16, 181, 193, 1)",
-                  },
-                  lineStyle: {
-                    color: "rgba(16, 181, 193, 1)",
-                  },
+                  color: "rgba(16, 181, 193, 1)",
                 },
               },
             },
-          ],
-        })
-      );
-
-      if (option && typeof option === "object") {
-        myChart.setOption(option);
-      }
-
-      window.addEventListener("resize", myChart.resize);
-    </script>
-
-    <table id="displayTable" class="display" width="100%"></table>
-
-    <script>
-      const dataSet = getOrgSpaceBuildpackAppTableData();
-
-      new DataTable("#displayTable", {
-        columns: [
-          { title: "Org" },
-          { title: "Space" },
-          { title: "Application" },
-          { title: "Application Instances" },
-          { title: "State" },
-          { title: "Memory" },
-          { title: "Disk Quota" },
-          { title: "Buildpack" },
+          },
         ],
-        data: dataSet,
-      });
-    </script>
-  </body>
+      })
+    );
+
+    if (option && typeof option === "object") {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener("resize", myChart.resize);
+  </script>
+
+  <table id="displayTable" class="display" width="100%"></table>
+
+  <script>
+    const dataSet = getOrgSpaceBuildpackAppTableData();
+
+    datatable = new DataTable("#displayTable", {
+      columns: [
+        { title: "Org" },
+        { title: "Space" },
+        { title: "Application" },
+        { title: "Application Instances" },
+        { title: "State" },
+        { title: "Memory" },
+        { title: "Disk Quota" },
+        { title: "Buildpack" },
+      ],
+      data: dataSet,
+      dom: 'Blfrtip',
+      buttons: [
+        'colvis',
+        { extend: 'copy', text: 'Copy to clipboard' },
+        'excel',
+        'csv',
+      ],
+      colReorder: true,
+      select: {
+        style: 'multi'
+      },
+      "pageLength": 50,
+      "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]]
+    });
+  </script>
+</body>
+
 </html>
